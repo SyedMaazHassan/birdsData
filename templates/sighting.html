@@ -1,0 +1,45 @@
+{% load static %}
+
+{% include 'inc/head.inc.html' %}
+{% include 'inc/navbar.inc.html' %}
+
+
+<body style="background-color: #ffffff;">
+    <div class="row" style="width: 100%;">
+        <div class="col-12 d-flex justify-content-center align-items-center" style="min-height: 90vh">
+            <div class="my-form my-5" id="mainDiv">
+                <h4 class="text-info">Enter details of sighting</h4>
+
+
+                {% for message in messages %}
+
+                <div class="alert alert-success my-3" role="alert">
+                    {{message}}
+                </div>
+
+                {% endfor %}
+
+                <form autocomplete="off" style="text-align:center; margin-top: 30px;" id="sighting_form" action="new-sighting" method="POST">
+                    {% csrf_token %}
+  
+                    <!-- <input class="field form-control" name="name" type="text" value="{{name}}" placeholder="First name" required> -->
+                    <select class="form-control field" id="bird" name="bird" required>
+                        <option value="">Select bird</option>
+                        {% for bird in birds %}
+                        <option value="{{ bird.id }}">{{ bird.common_name }}</option>
+                        {% endfor %}
+                    </select>
+                    <input class="field form-control" name="location" type="text" placeholder="Location" required>
+                    <textarea class="form-control" name="comment" rows="3" placeholder="Add comment"></textarea>
+                    <p class="text-danger" id="error"></p>
+
+                    <button class="btn btn-block btn-info" type="submit" style="height: 40px;">Add bird sighting</button>        
+                    <br>        
+                </form>
+            </div>
+        </div>
+    </div>    
+</body>
+
+
+</html>

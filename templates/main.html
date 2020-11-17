@@ -1,0 +1,73 @@
+{% load static %}
+
+{% include 'inc/head.inc.html' %}
+{% include 'inc/navbar.inc.html' %}
+
+<body>
+    <div  class="container">
+        <div class="text-center pt-5">
+            <div class="form-group">
+                <select class="form-control" id="selectOrder" style="width: 400px; margin: auto;">
+                    <option value="">Select order</option>
+                    {% for single in listing %}
+                    <option value="{{single.0}}">{{single.1}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div id="main_div"  style="width: 300px; width: 100%;">
+        </div>
+    </div>
+  
+</body>
+
+
+<script>
+    $("#selectOrder").on('change', function(){
+        var order = $("#selectOrder").val();
+        if (order == "") {
+            $("#myChart").css('display', 'none');
+            return
+        }
+
+        $("#main_div").children().remove();
+
+        $("#myChart").css('display', '');
+
+        $.ajax({
+            url: "{% url 'getData' %}",
+            type: "GET",
+            data: `order_id=${order}`,
+            success: (response)=>{
+                $("#main_div").append(`
+                        <canvas id="myChart" class="my-5"></canvas>
+                `);
+                var ctx = document.getElementById('myChart').getContext('2d');
+                var chart = new Chart(ctx, {
+                    // The type of chart we want to create
+                    type: 'bar',
+
+                    // The data for our dataset
+                    data: {
+                        labels: response.header,
+                        datasets: [{
+                            label: 'Count of birds in family',
+                            backgroundColor: 'rgb(91, 192, 222)',
+                            borderColor: 'rgb(91, 192, 222)',
+                            data: response.counts
+                        }]
+                    },
+
+                    // Configuration options go here
+                    options: {}
+                });
+            }
+        })
+    })
+
+
+
+</script>
+
+</html>
